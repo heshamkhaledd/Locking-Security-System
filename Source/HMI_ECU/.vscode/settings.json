@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "timer.h": "c",
+        "std_types.h": "c",
+        "micro_config.h": "c",
+        "io.h": "c",
+        "iom16.h": "c",
+        "interrupt.h": "c",
+        "iom16m1.h": "c",
+        "delay.h": "c"
+    }
+}
