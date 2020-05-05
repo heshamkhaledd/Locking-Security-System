@@ -5,7 +5,7 @@ OBJCOPY=avr-objcopy
 ELF=elf_out
 MAP=map_out
 SIZE=avr-size
-CFLAGS=-Wl,-Map,out/${MAP}.map -mmcu=${MCU} -DF_CPU=${F_CPU} -Iinc -O1
+CFLAGS=-std=gnu99 -Wl,-Map,out/${MAP}.map -mmcu=${MCU} -DF_CPU=${F_CPU} -Iinc -O0
 TARGET=hex_out
 SRCS=*.c
 

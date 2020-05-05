@@ -11,7 +11,8 @@
 
 #include "hmi_layer.h"
 
-
+uint8 open_flag = 0;
+uint8 close_flag = 0;
 
 /******************************************************************************
  *
@@ -45,6 +46,17 @@ void SYSTEM_mainMenu (void)
 
 void SYSTEM_setPassword (void)
 {
+	static uint8 visit = 0;
+	
+	if (visit == 0)
+	{
+		visit++;
+		LCD_clearScreen ();
+		LCD_goToRowColumn (0,0);
+		LCD_displayString ("  **WELCOME**");
+		_delay_ms (500);
+	}
+	
 	LCD_clearScreen ();
 	LCD_goToRowColumn (0,0);
 	LCD_displayString ("Enter Password:");
@@ -52,12 +64,15 @@ void SYSTEM_setPassword (void)
 
 	/* Iterate 5 times to send a 5 characters password, each
 	/* character is sent with each iteration */
-	uint8 counter;
-	for (counter=0;counter<password_length;counter++)
+
+	for (uint8 counter=0;counter<password_length;counter++)
 	{
 		uint8 pressed_key;
 		pressed_key = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (200);
+		_delay_ms (250);
+		LCD_integerToString (pressed_key);
+		_delay_ms (150);
+		LCD_goToRowColumn (1,counter);
 		LCD_displayCharacter ('*');
 		/*UART_sendByte (pressed_key); */ /* Sending the password's character to the 2nd ECU */
 	}
@@ -75,21 +90,22 @@ void SYSTEM_setPassword (void)
 
 void SYSTEM_confirmPassword (void)
 {
-	LCD_clearScreen ();
 	LCD_goToRowColumn (0,0);
 	LCD_displayString ("Confirm Password:");
 	LCD_goToRowColumn (1,0);
 
 	/* Iterate 5 times to send a 5 characters password, each
-	 * character is sent with each iteration */
+	/* character is sent with each iteration */
 	uint8 counter;
 	for (counter=0;counter<password_length;counter++)
 	{
 		uint8 pressed_key;
 		pressed_key = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (200);
+		_delay_ms (250);
+		LCD_integerToString (pressed_key);
+		_delay_ms (150);
+		LCD_goToRowColumn (1,counter);
 		LCD_displayCharacter ('*');
-		_delay_ms (50);
 		/*UART_sendByte (pressed_key); */ /* Sending the password's character to the 2nd ECU */
 	}
 	LCD_clearScreen ();
@@ -105,15 +121,16 @@ void SYSTEM_confirmPassword (void)
  *
  *****************************************************************************/
 
-void SYSTEM_checkMatching (void)
+uint8 SYSTEM_checkMatching (void)
 {
-	while (!UART_recieveByte ())
+	if (UART_recieveByte == 0)
 	{
 		SYSTEM_errorMessage ();
 		_delay_ms (50);
-		SYSTEM_setPassword ();
-		SYSTEM_confirmPassword ();
+		return initial;
 	}
+	else
+		return Idle;
 }
 
 /******************************************************************************
@@ -140,7 +157,7 @@ void SYSTEM_enterPassword (void)
 	{
 		uint8 pressed_key;
 		pressed_key = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (200); /* To prevent pressing overlap */
+		_delay_ms (250); /* To prevent pressing overlap */
 		LCD_displayCharacter ('*');
 		/*UART_sendByte (pressed_key); */ /* Sending the password's character to the 2nd ECU */
 		}
@@ -163,15 +180,17 @@ void SYSTEM_confirm_Open_Message (void)
 		LCD_displayString ("Door is now");
 		LCD_goToRowColumn (1,0);
 		LCD_displayString ("Opening...");
+		while (open_flag == 0); /* Polling for 8 seconds until the door is closed */
 }
 
 void SYSTEM_confirm_Close_Message (void)
-{
+{	
 	LCD_clearScreen ();
 	LCD_displayString ("Door is now");
 	LCD_goToRowColumn (1,0);
 	LCD_displayString ("Closing...");
-	while (BIT_IS_CLEAR (TIFR,OCF1A)); /* Polling for 15 seconds until the door is closed */
+	while (close_flag == 0);
+
 }
 
 
@@ -190,7 +209,12 @@ void SYSTEM_errorMessage (void)
 {
 	LCD_clearScreen ();
 	LCD_displayString ("  **Invalid**");
-	_delay_ms (2000);
+	_delay_ms (500);
+	LCD_clearScreen ();
+	_delay_ms (200);
+	LCD_displayString ("  **Invalid**");
+	_delay_ms (500);
+	LCD_clearScreen ();
 }
 
 /******************************************************************************
@@ -209,13 +233,13 @@ uint8 SYSTEM_userChooseOption (void)
 {
 	uint8 pressed_key;
 	pressed_key = KeyPad_getPressedKey ();
-	_delay_ms (200);
+	_delay_ms (250);
 	if ((pressed_key == '+') || (pressed_key == '-'))
 	{
 		if (pressed_key == '+')
-			return 1;
+			return CHG_PW;
 		else if (pressed_key == '-')
-			return 0;
+			return O_DOOR;
 	}
 		return -1;
 }

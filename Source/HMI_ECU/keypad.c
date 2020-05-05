@@ -18,8 +18,8 @@
 
 #if (N_col == 3)
 /*
- * Function responsible for mapping the switch number in the keypad to
- * its corresponding functional number in the proteus for 4x3 keypad
+/* Function responsible for mapping the switch number in the keypad to
+/* its corresponding functional number in the proteus for 4x3 keypad
  */
 static uint8 KeyPad_4x3_adjustKeyNumber(uint8 button_number);
 #elif (N_col == 4)
@@ -41,15 +41,15 @@ uint8 KeyPad_getPressedKey(void)
 		for(col=0;col<N_col;col++) /* loop for columns */
 		{
 			/* 
-			 * each time only one of the column pins will be output and 
-			 * the rest will be input pins include the row pins 
-			 */ 
+			/* each time only one of the column pins will be output and 
+			/* the rest will be input pins include the row pins 
+			*/ 
 			KEYPAD_PORT_DIR = (0b00010000<<col); 
 			
 			/* 
-			 * clear the output pin column in this trace and enable the internal 
-			 * pull up resistors for the rows pins
-			 */ 
+			/* clear the output pin column in this trace and enable the internal 
+			/* pull up resistors for the rows pins
+			*/ 
 			KEYPAD_PORT_OUT = (~(0b00010000<<col));
 
 			for(row=0;row<N_row;row++) /* loop for rows */

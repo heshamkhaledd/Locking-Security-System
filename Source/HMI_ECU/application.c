@@ -12,38 +12,44 @@
 
 #include "hmi_layer.h"
 
-Timer_Config g_s_T1config;
-void TIMER_config (void)
+Timer_Config g_s_T1_Aconfig;
+Timer_Config g_s_T1_Bconfig;
+
+
+void TIMER_config (uint8 channel,uint16 comp_var,Timer_Config *Member_Ptr)
 {
-	Timer_Config *config_Ptr = &g_s_T1config;
+	Timer_Config *config_Ptr = Member_Ptr;
 	config_Ptr->a_mode = TIMER_compareMode;
-	config_Ptr->a_channel = 'A';
+	config_Ptr->a_channel = channel;
 	config_Ptr->a_prescaler = Prescaler_1024;
 	config_Ptr->a_inital_value = 0;
-	config_Ptr->a_compare_value = 65500;
+	config_Ptr->a_compare_value = comp_var;
 }
+
+
 int main ()
 {
 	uint8 SYSTEM_launchTimes = 0;
-	uint8 order;
+	uint8 state = initial;
 	LCD_init ();
 	LCD_clearScreen ();
 	UART_init ();
-	TIMER_config ();
+	TIMER_config ('A',65500,&g_s_T1_Aconfig);
+	TIMER_config ('B',65500,&g_s_T1_Bconfig);
 	SREG |= (1<<7);
 	while (1)
 	{
 		/***********************************************************************
-		 * If this is the system first launching, It's required from the user
-		 * To Configure his security password for the first time, in order to
-		 * Use it later
+		 * If this is the system first launching, Display a Welcome message.
+		 *  It's required from the user To Configure his security password for
+		 * the first time, in order to Use it later
 		 ***********************************************************************/
 
-		if (SYSTEM_launchTimes == 0)
+		while ((SYSTEM_launchTimes == 0) && state != Idle)
 		{
 			SYSTEM_setPassword ();
 			SYSTEM_confirmPassword ();
-			/*SYSTEM_checkMatching ();*/
+			/* order = SYSTEM_checkMatching ();*/
 			SYSTEM_launchTimes++; /* To Never get back in this block if the initial settings are made */
 		}
 
@@ -53,20 +59,23 @@ int main ()
 		 ***************************************************************************/
 
 		SYSTEM_mainMenu ();
-		order = SYSTEM_userChooseOption ();
-		if (order == 1)
+		state = SYSTEM_userChooseOption ();
+
+		if (state == CHG_PW)
 		{
 			SYSTEM_enterPassword ();
 			SYSTEM_setPassword ();
 			SYSTEM_confirmPassword ();
 			/*SYSTEM_checkMatching ();*/
 		}
-		else if (order == 0)
+		else if (state == O_DOOR)
 		{
 			SYSTEM_enterPassword ();
 			TIMER1_setCallBack (SYSTEM_confirm_Close_Message);
-			TIMER1_init (&g_s_T1config);
+			TIMER1_init (&g_s_T1_Aconfig);
+			TIMER1_init (&g_s_T1_Bconfig);
 			SYSTEM_confirm_Open_Message ();
+			TIMER1_deinit ();
 		}
 		else
 		{

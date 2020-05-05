@@ -23,7 +23,13 @@
  *                      Preprocessor Macros                                    *
  *******************************************************************************/
 
-#define password_length 5
+#define password_length 1
+
+/* SYSTEM states */
+#define initial 1
+#define Idle    2
+#define CHG_PW  3
+#define O_DOOR  4
 
 
 /*******************************************************************************
@@ -33,7 +39,7 @@
 void SYSTEM_mainMenu (void);
 void SYSTEM_setPassword (void);
 void SYSTEM_confirmPassword (void);
-void SYSTEM_checkMatching (void);
+uint8 SYSTEM_checkMatching (void);
 void SYSTEM_enterPassword (void);
 void SYSTEM_confirm_Open_Message (void);
 void SYSTEM_confirm_Close_Message (void);
