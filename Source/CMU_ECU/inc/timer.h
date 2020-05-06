@@ -45,10 +45,10 @@ typedef struct{
  *                      Functions Prototypes                                   *
  *******************************************************************************/
 
-void TIMER_config (void);
+void TIMER_config (uint8,uint16,Timer_Config *);
 void TIMER0_init (const Timer_Config *T0config_Ptr);
 void TIMER1_init (const Timer_Config *T1config_Ptr);
 void TIMER1_setCallBack (void(*Ptr2Func)(void));
 void TIMER0_setCallBack (void(*Ptr2Func(void)));
-void TIMER1_disable (void);
+void TIMER1_deinit (void);
 #endif /* TIMER_H_ */

@@ -14,6 +14,7 @@
 #include "external_eeprom.h"
 #include "timer.h"
 #include "uart.h"
+#include "motor.h"
 
 
 #ifndef HMI_LAYER_H_
@@ -23,15 +24,30 @@
  *                      Preprocessor Macros                                    *
  *******************************************************************************/
 
+/* PASS specs */
+#define password_length 1
+#define MAX_TRY         3
 
-#define password_length 3
+/* SYSTEM states */
+#define initial         1
+#define Idle            2
+#define CHG_PW          3
+#define O_DOOR          4
+
+/* UART states */
+#define READY           1
+#define NOT_READY       0
 
 
 /*******************************************************************************
  *                      Functions Prototypes                                   *
 *******************************************************************************/
 
-void CONTROL_receivePassword (void);
+uint8 CONTROL_setReceivePassword (void);
+uint8 CONTROL_checkMatch (void);
+void MODULES_init (void);
+void CONTROL_storePassword (const uint8 *);
+
 
 
 

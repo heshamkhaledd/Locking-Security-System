@@ -3,7 +3,15 @@ Archive member included because of file (symbol)
 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
                               c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm16.o (exit)
 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
-                              C:\Users\Parav\AppData\Local\Temp/cclCMuKE.o (__do_clear_bss)
+                              C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o (__do_clear_bss)
+c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                              C:\Users\Parav\AppData\Local\Temp/ccV4OxzX.o (strcmp)
+
+Allocating common symbols
+Common symbol       size              file
+
+g_s_T1_Aconfig      0x9               C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+g_s_T1_Bconfig      0x9               C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
 
 Memory Configuration
 
@@ -19,13 +27,13 @@ signature        0x00840000         0x00000400         rw !x
 Linker script and memory map
 
 LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm16.o
-LOAD C:\Users\Parav\AppData\Local\Temp/ccibrOXR.o
-LOAD C:\Users\Parav\AppData\Local\Temp/ccVEbSYJ.o
-LOAD C:\Users\Parav\AppData\Local\Temp/cckZqSfF.o
-LOAD C:\Users\Parav\AppData\Local\Temp/ccL8nSPC.o
-LOAD C:\Users\Parav\AppData\Local\Temp/cc68hMKC.o
-LOAD C:\Users\Parav\AppData\Local\Temp/cclCMuKE.o
-LOAD C:\Users\Parav\AppData\Local\Temp/ccMRMOaM.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccV4OxzX.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccETglzB.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccFvhU9h.o
+LOAD C:\Users\Parav\AppData\Local\Temp/cculSwF2.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccTPmKCP.o
+LOAD C:\Users\Parav\AppData\Local\Temp/ccMbJP8E.o
 LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
 LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a
 LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
@@ -120,7 +128,7 @@ LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x4d2
+.text           0x00000000      0xab0
  *(.vectors)
  .vectors       0x00000000       0x54 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm16.o
                 0x00000000                __vectors
@@ -192,48 +200,58 @@ LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
                 0x00000078                __vector_16
                 0x00000078                __vector_18
                 0x00000078                __vector_20
- .text          0x0000007c        0xe C:\Users\Parav\AppData\Local\Temp/ccibrOXR.o
-                0x0000007c                main
- .text          0x0000008a        0xe C:\Users\Parav\AppData\Local\Temp/ccVEbSYJ.o
-                0x0000008a                CONTROL_receivePassword
- .text          0x00000098      0x100 C:\Users\Parav\AppData\Local\Temp/cckZqSfF.o
-                0x00000098                EEPROM_readByte
-                0x00000130                EEPROM_writeByte
-                0x00000192                EEPROM_init
- .text          0x00000198       0x60 C:\Users\Parav\AppData\Local\Temp/ccL8nSPC.o
-                0x000001bc                TWI_write
-                0x000001a6                TWI_start
-                0x000001e0                TWI_readWithNACK
-                0x000001ce                TWI_readWithACK
-                0x00000198                TWI_init
-                0x000001b6                TWI_stop
-                0x000001f2                TWI_getStatus
- .text          0x000001f8       0x3e C:\Users\Parav\AppData\Local\Temp/cc68hMKC.o
-                0x000001f8                MOTOR_init
- .text          0x00000236      0x1fa C:\Users\Parav\AppData\Local\Temp/cclCMuKE.o
-                0x00000390                __vector_6
-                0x00000236                TIMER1_disable
-                0x000003e2                __vector_7
-                0x0000024a                TIMER1_init
-                0x00000342                __vector_8
-                0x00000338                TIMER1_setCallBack
- .text          0x00000430       0x9e C:\Users\Parav\AppData\Local\Temp/ccMRMOaM.o
-                0x00000448                UART_sendByte
-                0x00000466                UART_sendString
-                0x00000490                UART_receiveString
-                0x00000458                UART_recieveByte
-                0x00000430                UART_init
- .text          0x000004ce        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
- .text          0x000004ce        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
-                0x000004ce                . = ALIGN (0x2)
+ .text          0x0000007c      0x122 C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+                0x000000e8                main
+                0x0000007c                TIMER_config
+ .text          0x0000019e      0x1da C:\Users\Parav\AppData\Local\Temp/ccV4OxzX.o
+                0x0000019e                MODULES_init
+                0x00000254                CONTROL_storePassword
+                0x000001e2                CONTROL_setReceivePassword
+                0x000002a6                CONTROL_checkMatch
+                0x00000326                MOTOR_run
+ .text          0x00000378      0x154 C:\Users\Parav\AppData\Local\Temp/ccETglzB.o
+                0x0000040c                EEPROM_readByte
+                0x0000038a                EEPROM_writeByte
+                0x00000378                EEPROM_init
+ .text          0x000004cc       0xfa C:\Users\Parav\AppData\Local\Temp/ccFvhU9h.o
+                0x0000052e                TWI_write
+                0x000004f8                TWI_start
+                0x00000582                TWI_readWithNACK
+                0x0000055c                TWI_readWithACK
+                0x000004cc                TWI_init
+                0x00000518                TWI_stop
+                0x000005a8                TWI_getStatus
+ .text          0x000005c6       0x76 C:\Users\Parav\AppData\Local\Temp/cculSwF2.o
+                0x000005c6                MOTOR_init
+ .text          0x0000063c      0x306 C:\Users\Parav\AppData\Local\Temp/ccTPmKCP.o
+                0x000008aa                __vector_6
+                0x0000063c                TIMER1_disable
+                0x0000066c                TIMER1_deinit
+                0x000008d4                __vector_7
+                0x000006aa                TIMER1_init
+                0x00000850                __vector_8
+                0x0000082c                TIMER1_setCallBack
+ .text          0x00000942      0x158 C:\Users\Parav\AppData\Local\Temp/ccMbJP8E.o
+                0x00000976                UART_sendByte
+                0x000009c2                UART_sendString
+                0x00000a14                UART_receiveString
+                0x000009a4                UART_recieveByte
+                0x00000942                UART_init
+ .text          0x00000a9a        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
+ .text          0x00000a9a        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
+ .text          0x00000a9a        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                0x00000a9a                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x000004ce        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
- .text.libgcc   0x000004ce        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
-                0x000004ce                . = ALIGN (0x2)
+ .text.libgcc   0x00000a9a        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x00000a9a        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
+ .text.avr-libc
+                0x00000a9a       0x12 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                0x00000a9a                strcmp
+                0x00000aac                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000004ce        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
-                0x000004ce                exit
-                0x000004ce                _exit
+ .fini9         0x00000aac        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
+                0x00000aac                exit
+                0x00000aac                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -252,23 +270,24 @@ LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000004ce        0x4 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000aac        0x4 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000004d2                _etext = .
+                0x00000ab0                _etext = .
 
-.data           0x00800060        0x0 load address 0x000004d2
+.data           0x00800060        0x0 load address 0x00000ab0
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800060        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm16.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccibrOXR.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccVEbSYJ.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cckZqSfF.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccL8nSPC.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cc68hMKC.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cclCMuKE.o
- .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccMRMOaM.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccV4OxzX.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccETglzB.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccFvhU9h.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cculSwF2.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccTPmKCP.o
+ .data          0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccMbJP8E.o
  .data          0x00800060        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
  .data          0x00800060        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
+ .data          0x00800060        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a(strcmp.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
@@ -277,31 +296,38 @@ LOAD c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a
                 0x00800060                _edata = .
                 0x00800060                PROVIDE (__data_end, .)
 
-.bss            0x00800060        0x2
+.bss            0x00800060       0x18
                 0x00800060                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800060        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5/crtm16.o
- .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccibrOXR.o
- .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccVEbSYJ.o
- .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cckZqSfF.o
- .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccL8nSPC.o
- .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/cc68hMKC.o
- .bss           0x00800060        0x2 C:\Users\Parav\AppData\Local\Temp/cclCMuKE.o
- .bss           0x00800062        0x0 C:\Users\Parav\AppData\Local\Temp/ccMRMOaM.o
- .bss           0x00800062        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
- .bss           0x00800062        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00800060        0x0 C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+ .bss           0x00800060        0x3 C:\Users\Parav\AppData\Local\Temp/ccV4OxzX.o
+                0x00800061                CCW_flag
+                0x00800060                CW_flag
+ .bss           0x00800063        0x0 C:\Users\Parav\AppData\Local\Temp/ccETglzB.o
+ .bss           0x00800063        0x0 C:\Users\Parav\AppData\Local\Temp/ccFvhU9h.o
+ .bss           0x00800063        0x0 C:\Users\Parav\AppData\Local\Temp/cculSwF2.o
+ .bss           0x00800063        0x3 C:\Users\Parav\AppData\Local\Temp/ccTPmKCP.o
+                0x00800063                tick
+ .bss           0x00800066        0x0 C:\Users\Parav\AppData\Local\Temp/ccMbJP8E.o
+ .bss           0x00800066        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_exit.o)
+ .bss           0x00800066        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00800066        0x0 c:/winavr-20100110/bin/../lib/gcc/avr/4.3.3/../../../../avr/lib/avr5\libc.a(strcmp.o)
  *(.bss*)
  *(COMMON)
-                0x00800062                PROVIDE (__bss_end, .)
-                0x000004d2                __data_load_start = LOADADDR (.data)
-                0x000004d2                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800066       0x12 C:\Users\Parav\AppData\Local\Temp/ccAYLSTk.o
+                0x00800066                g_s_T1_Aconfig
+                0x0080006f                g_s_T1_Bconfig
+                0x00800078                PROVIDE (__bss_end, .)
+                0x00000ab0                __data_load_start = LOADADDR (.data)
+                0x00000ab0                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800062        0x0
-                0x00800062                PROVIDE (__noinit_start, .)
+.noinit         0x00800078        0x0
+                0x00800078                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800062                PROVIDE (__noinit_end, .)
-                0x00800062                _end = .
-                0x00800062                PROVIDE (__heap_start, .)
+                0x00800078                PROVIDE (__noinit_end, .)
+                0x00800078                _end = .
+                0x00800078                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)

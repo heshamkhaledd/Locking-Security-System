@@ -6,12 +6,11 @@
  *
  * Description: Source file for the timer driver
  *
- * Engineer: Paravoid
+ * Engineer: Hesham Khaled
  *
  *******************************************************************************/
 
 #include "timer.h"
-#include "lcd.h"
 
 uint8 tick = 0;
 extern uint8 open_flag;

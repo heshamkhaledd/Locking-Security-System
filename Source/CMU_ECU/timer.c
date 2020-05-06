@@ -6,11 +6,16 @@
  *
  * Description: Source file for the timer driver
  *
- * Engineer: Paravoid
+ * Engineer: Hesham Khaled
  *
  *******************************************************************************/
 
 #include "timer.h"
+
+
+uint8 tick = 0;
+extern uint8 CW_flag;
+extern uint8 CCW_flag;
 
 static volatile void (*g_Timer1_Call_Back_Ptr) (void) = (void *) 0;
 
@@ -67,6 +72,15 @@ ISR (TIMER0_COMP_vect)
 }
 #elif (TIMER == 1)
 
+void TIMER1_deinit (void)
+{
+	TCCR1A = 0;
+	TCCR1B = 0;
+	OCR1A = 0;
+	CLEAR_BIT (TIMSK,OCIE1A);
+	CLEAR_BIT (TIMSK,TOIE1);
+}
+
 
 void TIMER1_init (const Timer_Config *T1config_Ptr)
 {
@@ -85,7 +99,7 @@ void TIMER1_init (const Timer_Config *T1config_Ptr)
 			SET_BIT (TCCR1A,FOC1A);
 			SET_BIT (TCCR1B,WGM12);
 			SET_BIT (TCCR1B,WGM13);
-			TCCR1B = (TCCR0 & 0xF8) | (T1config_Ptr->a_prescaler & 0x7);
+			TCCR1B = (TCCR1B & 0xF8) | (T1config_Ptr->a_prescaler & 0x7);
 			TCNT1 = T1config_Ptr->a_inital_value;
 			OCR1A = T1config_Ptr->a_compare_value;
 			SET_BIT (TIMSK,OCIE1A);
@@ -95,7 +109,7 @@ void TIMER1_init (const Timer_Config *T1config_Ptr)
 			SET_BIT (TCCR1A,FOC1B);
 			SET_BIT (TCCR1B,WGM12);
 			SET_BIT (TCCR1B,WGM13);
-			TCCR1B = (TCCR0 & 0xF8) | (T1config_Ptr->a_prescaler & 0x7);
+			TCCR1B = (TCCR1B & 0xF8) | (T1config_Ptr->a_prescaler & 0x7);
 			TCNT1 = T1config_Ptr->a_inital_value;
 			OCR1B = T1config_Ptr->a_compare_value;
 			SET_BIT (TIMSK,OCIE1B);
@@ -116,12 +130,13 @@ ISR (TIMER1_OVF_vect)
 }
 ISR (TIMER1_COMPA_vect)
 {
-	(*g_Timer1_Call_Back_Ptr)();
-	TIMER1_disable ();
+	CCW_flag = 1;
+	
 }
 ISR (TIMER1_COMPB_vect)
 {
-
+	SREG |= (1<<7);
+	CW_flag = 1;
 	(*g_Timer1_Call_Back_Ptr)();
 }
 #endif

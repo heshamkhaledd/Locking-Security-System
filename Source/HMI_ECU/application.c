@@ -31,12 +31,8 @@ int main ()
 {
 	uint8 SYSTEM_launchTimes = 0;
 	uint8 state = initial;
-	LCD_init ();
-	LCD_clearScreen ();
-	UART_init ();
-	TIMER_config ('A',65500,&g_s_T1_Aconfig);
-	TIMER_config ('B',65500,&g_s_T1_Bconfig);
-	SREG |= (1<<7);
+	uint8 ERROR = 0;
+	MODULES_init ();
 	while (1)
 	{
 		/***********************************************************************
@@ -49,7 +45,7 @@ int main ()
 		{
 			SYSTEM_setPassword ();
 			SYSTEM_confirmPassword ();
-			/* order = SYSTEM_checkMatching ();*/
+			SYSTEM_checkMatching ();
 			SYSTEM_launchTimes++; /* To Never get back in this block if the initial settings are made */
 		}
 
@@ -64,18 +60,41 @@ int main ()
 		if (state == CHG_PW)
 		{
 			SYSTEM_enterPassword ();
-			SYSTEM_setPassword ();
-			SYSTEM_confirmPassword ();
-			/*SYSTEM_checkMatching ();*/
+			while ((UART_recieveByte == 0) && ERROR != MAX_TRY )
+				ERROR++;
+
+			if (ERROR != MAX_TRY)
+			{
+				ERROR = 0;
+				SYSTEM_setPassword ();
+				SYSTEM_confirmPassword ();
+				SYSTEM_checkMatching ();
+			}
+			else
+			{
+				SYSTEM_errorMessage ();
+			}
+			
 		}
 		else if (state == O_DOOR)
 		{
 			SYSTEM_enterPassword ();
-			TIMER1_setCallBack (SYSTEM_confirm_Close_Message);
-			TIMER1_init (&g_s_T1_Aconfig);
-			TIMER1_init (&g_s_T1_Bconfig);
-			SYSTEM_confirm_Open_Message ();
-			TIMER1_deinit ();
+			while ((UART_recieveByte == 0) && ERROR != MAX_TRY );
+				ERROR++;
+
+			if (ERROR != MAX_TRY)
+			{
+				ERROR = 0;
+				TIMER1_setCallBack (SYSTEM_confirm_Close_Message);
+				TIMER1_init (&g_s_T1_Aconfig);
+				TIMER1_init (&g_s_T1_Bconfig);
+				SYSTEM_confirm_Open_Message ();
+				TIMER1_deinit ();
+			}
+			else
+			{
+				SYSTEM_errorMessage ();
+			}
 		}
 		else
 		{
