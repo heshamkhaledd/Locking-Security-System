@@ -20,6 +20,7 @@ uint8 CCW_flag = 0;
 void MODULES_init (void)
 {
 	UART_init ();
+	LCD_init ();
 	EEPROM_init ();
 	TIMER_config ('A',25000,&g_s_T1_Aconfig);
 	TIMER_config ('B',25000,&g_s_T1_Bconfig);
@@ -46,49 +47,57 @@ uint8 CONTROL_setReceivePassword (void)
 	uint8 password_1[password_length+1];
 	uint8 password_2[password_length+1];
 	uint8 check;
-	UART_sendByte (READY);
+	while ((UART_recieveByte ()) != READY);
 	UART_receiveString (password_1);
-	UART_sendByte (READY);
+	while ((UART_recieveByte ()) != READY);
 	UART_receiveString (password_2);
 	check = strcmp (password_1,password_2);
 	if (check == 0)
 	{
 		check = Idle;
 		CONTROL_storePassword (password_1);
+		while ((UART_recieveByte ()) != READY);
 		UART_sendByte (1);
 	}
 
 	else
 	{
 		check = initial;
+		while ((UART_recieveByte ()) != READY);
 		UART_sendByte (0);
 	}
-	
 	return check;
 }
 
-void CONTROL_storePassword (const uint8 *password_1_Ptr)
+void CONTROL_storePassword (uint8 *password_1_Ptr)
 {
-	uint16 Idix = 0;
-	while ((*password_1_Ptr) != '\0' )
+	for (uint16 Idix=0 ; Idix<password_length ; Idix++)
 	{
 		EEPROM_writeByte (Idix,password_1_Ptr[Idix]);
-		Idix++;
+		_delay_ms (10);
 	}
 }
 
 
 uint8 CONTROL_checkMatch (void)
 {
+	uint8 Idix;
 	uint8 password[password_length+1];
 	uint8 stored_password[password_length+1];
+	while ((UART_recieveByte ()) != READY);
 	UART_receiveString (password);
-
-	for (uint16 Idix = 0 ; Idix < password_length ; Idix++)
-		EEPROM_readByte (Idix,stored_password);
+	for(Idix=0 ; Idix<password_length ; Idix++)
+    {
+     	EEPROM_readByte(Idix,&stored_password[Idix]);
+     	_delay_ms(5);
+		LCD_integerToString (stored_password[Idix]);
+    }
+	stored_password[Idix] = '\0';
 
 	if ((strcmp (password,stored_password)) == 0)
 		{
+			LCD_displayCharacter ('+');
+			while ((UART_recieveByte ()) != READY);
 			UART_sendByte (1);	
 			return 1;
 		}
@@ -116,4 +125,9 @@ void MOTOR_run (void)
 		while (CCW_flag == 0);
 		CCW_flag = 0;
 	}
+}
+
+uint8 get_state (void)
+{
+	return ((UART_recieveByte ()));
 }

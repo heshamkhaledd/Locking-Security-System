@@ -28,40 +28,57 @@ void TIMER_config (uint8 channel,uint16 comp_var,Timer_Config *Member_Ptr)
 
 int main ()
 {
-	uint8 CONTROL_launchTimes = 0;
 	MODULES_init ();
-	uint8 check = initial;
-	uint8 state;
+	uint8 state=initial;
+	uint8 check = 0;
 	uint8 ERROR_entry = 0;
-
+	
 
 	while (1)
 	{
-		while (CONTROL_launchTimes == 0 && check != Idle)
+		
+		/***********************************************************************
+		 * If this is the system first launching, keep the ECU in the initial
+		 * Condition. Waitinf for the user to enter and confirm his new
+		 * Password to store it in the EEPROM.
+		 ***********************************************************************/
+
+		while (state == initial)
 		{
-			CONTROL_launchTimes++;
-			check = CONTROL_setReceivePassword ();
+			state = CONTROL_setReceivePassword ();
 		}
 
-		check = initial;
+		/**************************************************************************
+		 * The default state of the system is to be in the Idle state,
+		 * waiting for the user to choose one of the options available for him
+		 ***************************************************************************/
 
-		state = UART_recieveByte ();
-
+		state = get_state ();
 		if (state == CHG_PW)
 		{
-			while (((CONTROL_checkMatch ()) == 0) && ERROR_entry != MAX_TRY)
+			while ( !check && ERROR_entry != MAX_TRY)
+			{
+				check = CONTROL_checkMatch ();
 				ERROR_entry++;
-
+			}
 			if (ERROR_entry != MAX_TRY)
 			{
+				LCD_displayString ("LOL");
+				_delay_ms (1000);
 				ERROR_entry = 0;
-				while (check != Idle)
-					check = CONTROL_setReceivePassword ();
+				while (state == CHG_PW)
+					state = CONTROL_setReceivePassword ();
+			}
+
+			else if (ERROR_entry == MAX_TRY)
+			{
+
 			}
 			
 		}
 		else if (state == O_DOOR)
 		{
+			LCD_displayCharacter ('-');
 			while ((CONTROL_checkMatch () == 0) && ERROR_entry != MAX_TRY)
 				ERROR_entry++;
 
@@ -80,7 +97,5 @@ int main ()
 			/* DO NOTHING */
 		}
 		
-		
-
 	}
 }

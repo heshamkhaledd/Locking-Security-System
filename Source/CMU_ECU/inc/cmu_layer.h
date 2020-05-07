@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "uart.h"
 #include "motor.h"
+#include "lcd.h"
 
 
 #ifndef HMI_LAYER_H_
@@ -25,7 +26,7 @@
  *******************************************************************************/
 
 /* PASS specs */
-#define password_length 1
+#define password_length 3
 #define MAX_TRY         3
 
 /* SYSTEM states */
@@ -38,6 +39,8 @@
 #define READY           1
 #define NOT_READY       0
 
+#define ADDRESS 10
+
 
 /*******************************************************************************
  *                      Functions Prototypes                                   *
@@ -45,8 +48,9 @@
 
 uint8 CONTROL_setReceivePassword (void);
 uint8 CONTROL_checkMatch (void);
+uint8 get_state (void);
 void MODULES_init (void);
-void CONTROL_storePassword (const uint8 *);
+void CONTROL_storePassword (uint8 *password_1_Ptr);
 
 
 
