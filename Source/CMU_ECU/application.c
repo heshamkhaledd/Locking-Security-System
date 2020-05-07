@@ -48,6 +48,7 @@ int main ()
 			state = CONTROL_setReceivePassword ();
 		}
 
+		LCD_displayString ("H");
 		/**************************************************************************
 		 * The default state of the system is to be in the Idle state,
 		 * waiting for the user to choose one of the options available for him
@@ -56,29 +57,27 @@ int main ()
 		state = get_state ();
 		if (state == CHG_PW)
 		{
-			while ( !check && ERROR_entry != MAX_TRY)
+			while (state == CHG_PW)
 			{
-				check = CONTROL_checkMatch ();
+				state = CONTROL_checkMatch ();
 				ERROR_entry++;
 			}
+			
 			if (ERROR_entry != MAX_TRY)
 			{
-				LCD_displayString ("LOL");
-				_delay_ms (1000);
 				ERROR_entry = 0;
-				while (state == CHG_PW)
+				while (state == initial)
 					state = CONTROL_setReceivePassword ();
 			}
 
 			else if (ERROR_entry == MAX_TRY)
 			{
-
+				state= Idle;
 			}
 			
 		}
 		else if (state == O_DOOR)
 		{
-			LCD_displayCharacter ('-');
 			while ((CONTROL_checkMatch () == 0) && ERROR_entry != MAX_TRY)
 				ERROR_entry++;
 

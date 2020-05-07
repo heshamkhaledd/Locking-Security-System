@@ -57,14 +57,15 @@ uint8 CONTROL_setReceivePassword (void)
 		check = Idle;
 		CONTROL_storePassword (password_1);
 		while ((UART_recieveByte ()) != READY);
-		UART_sendByte (1);
+		UART_sendByte (Idle);
+		
 	}
 
 	else
 	{
 		check = initial;
 		while ((UART_recieveByte ()) != READY);
-		UART_sendByte (0);
+		UART_sendByte (initial);
 	}
 	return check;
 }
@@ -75,6 +76,7 @@ void CONTROL_storePassword (uint8 *password_1_Ptr)
 	{
 		EEPROM_writeByte (Idix,password_1_Ptr[Idix]);
 		_delay_ms (10);
+		LCD_integerToString (password_1_Ptr[Idix]);
 	}
 }
 
@@ -90,21 +92,20 @@ uint8 CONTROL_checkMatch (void)
     {
      	EEPROM_readByte(Idix,&stored_password[Idix]);
      	_delay_ms(5);
-		LCD_integerToString (stored_password[Idix]);
     }
 	stored_password[Idix] = '\0';
 
 	if ((strcmp (password,stored_password)) == 0)
 		{
-			LCD_displayCharacter ('+');
 			while ((UART_recieveByte ()) != READY);
-			UART_sendByte (1);	
-			return 1;
+			UART_sendByte (initial);
+			return initial;
 		}
 	else
 	{
-		UART_sendByte (0);
-		return 0;
+		while ((UART_recieveByte ()) != READY);
+		UART_sendByte (CHG_PW);
+		return CHG_PW;
 	}
 }
 
