@@ -6,6 +6,11 @@
 1. Human Machine Interface (HMI) which is responsible for interfacing the user.
 2. Control Machine Unit (CMU) which is reponsible for handling all the logic.
 
+##### Each ECU is constructed with 3 software layers for optimization and portability purposes
+1. Application layer, where it just handles the ECU routine.
+2. Interfacing layer, where it communicate with external peripherals
+3. MCAL layer, the closest layer to the metal where all the controller's hardware registers are in.
+
 ## Routine
 The User is asked to enter his initial password through out a 4x4 Keypad and all the visuals for easing
 the user interaction are shown in a 16x2 LCD. Both connected to the 1st ECU (HMI).

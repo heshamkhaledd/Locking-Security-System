@@ -77,7 +77,7 @@ int main ()
 
 			else if (ERROR_entry == MAX_TRY)
 			{
-				CONTROL_alert ();  /* MAKE IT A BUZZER */
+				CONTROL_alert ();
 			}
 			
 		}
