@@ -30,7 +30,7 @@ int main ()
 {
 	MODULES_init ();
 	uint8 state=initial;
-	uint8 check = 0;
+	uint8 check=WRONG;
 	uint8 ERROR_entry = 0;
 	
 
@@ -43,57 +43,69 @@ int main ()
 		 * Password to store it in the EEPROM.
 		 ***********************************************************************/
 
-		while (state == initial)
+		while (state == initial && check == WRONG)
 		{
-			state = CONTROL_setReceivePassword ();
+			check = CONTROL_setReceivePassword ();
 		}
 
-		LCD_displayString ("H");
 		/**************************************************************************
 		 * The default state of the system is to be in the Idle state,
 		 * waiting for the user to choose one of the options available for him
 		 ***************************************************************************/
-
 		state = get_state ();
+
 		if (state == CHG_PW)
 		{
-			while (state == CHG_PW)
+			check=WRONG;
+			while (check == WRONG && ERROR_entry != MAX_TRY)
 			{
-				state = CONTROL_checkMatch ();
-				ERROR_entry++;
+				check = CONTROL_checkMatch ();
+				if (check == WRONG)
+				{
+					ERROR_entry++;
+				}
 			}
 			
 			if (ERROR_entry != MAX_TRY)
 			{
 				ERROR_entry = 0;
-				while (state == initial)
-					state = CONTROL_setReceivePassword ();
+				check = WRONG;
+				while (check == WRONG)
+					check = CONTROL_setReceivePassword ();
 			}
 
 			else if (ERROR_entry == MAX_TRY)
 			{
-				state= Idle;
+				while (1);  /* MAKE IT A BUZZER */
 			}
 			
 		}
 		else if (state == O_DOOR)
 		{
-			while ((CONTROL_checkMatch () == 0) && ERROR_entry != MAX_TRY)
-				ERROR_entry++;
+			check = WRONG;
+			while (check == WRONG && ERROR_entry != MAX_TRY)
+			{
+				check = CONTROL_checkMatch ();
+				if (check == WRONG)
+				{
+					ERROR_entry++;
+				}
+			}
 
 			if (ERROR_entry != MAX_TRY)
 			{
 				ERROR_entry = 0;
-				TIMER1_setCallBack (MOTOR_run);
+				TIMER1_setCallBack (MOTOR_close);
 				TIMER1_init (&g_s_T1_Aconfig);
 				TIMER1_init (&g_s_T1_Bconfig);
-				MOTOR_run ();
+				MOTOR_open (CLOCKWISE);
 				TIMER1_deinit ();
+				MOTOR_stop ();
 			}
 		}
 		else
 		{
-			/* DO NOTHING */
+			/* DO NOTHING AND RETURN TO IDEL STATE */
 		}
 		
 	}

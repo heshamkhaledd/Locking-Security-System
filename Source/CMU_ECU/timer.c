@@ -74,6 +74,8 @@ ISR (TIMER0_COMP_vect)
 
 void TIMER1_deinit (void)
 {
+	CW_flag = 0;
+	CCW_flag = 0;
 	TCCR1A = 0;
 	TCCR1B = 0;
 	OCR1A = 0;
@@ -130,7 +132,12 @@ ISR (TIMER1_OVF_vect)
 }
 ISR (TIMER1_COMPA_vect)
 {
-	CCW_flag = 1;
+	tick++;
+	if (tick == 2)
+	{
+		tick = 0;
+		CCW_flag = 1;
+	}
 	
 }
 ISR (TIMER1_COMPB_vect)

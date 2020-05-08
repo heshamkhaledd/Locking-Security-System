@@ -47,6 +47,7 @@ uint8 CONTROL_setReceivePassword (void)
 	uint8 password_1[password_length+1];
 	uint8 password_2[password_length+1];
 	uint8 check;
+	uint8 state;
 	while ((UART_recieveByte ()) != READY);
 	UART_receiveString (password_1);
 	while ((UART_recieveByte ()) != READY);
@@ -58,14 +59,13 @@ uint8 CONTROL_setReceivePassword (void)
 		CONTROL_storePassword (password_1);
 		while ((UART_recieveByte ()) != READY);
 		UART_sendByte (Idle);
-		
 	}
 
 	else
 	{
-		check = initial;
+		check = WRONG;
 		while ((UART_recieveByte ()) != READY);
-		UART_sendByte (initial);
+		UART_sendByte (WRONG);
 	}
 	return check;
 }
@@ -76,7 +76,6 @@ void CONTROL_storePassword (uint8 *password_1_Ptr)
 	{
 		EEPROM_writeByte (Idix,password_1_Ptr[Idix]);
 		_delay_ms (10);
-		LCD_integerToString (password_1_Ptr[Idix]);
 	}
 }
 
@@ -98,34 +97,34 @@ uint8 CONTROL_checkMatch (void)
 	if ((strcmp (password,stored_password)) == 0)
 		{
 			while ((UART_recieveByte ()) != READY);
-			UART_sendByte (initial);
-			return initial;
+			UART_sendByte (Idle);
+			return Idle;
 		}
 	else
 	{
 		while ((UART_recieveByte ()) != READY);
-		UART_sendByte (CHG_PW);
-		return CHG_PW;
+		UART_sendByte (WRONG);
+		return WRONG;
 	}
 }
 
-void MOTOR_run (void)
+void MOTOR_open (uint8 dir)
 {
-	static uint8 entry = 0;
-	if (entry == 0)
-	{
-		entry++;
-		MOTOR_init (CLOCKWISE);
-		while (CW_flag == 0);
-		CW_flag = 0;
-	}
-	else if (entry == 1)
-	{
-		entry = 0;
-		MOTOR_init (ANTICLOCKWISE);
-		while (CCW_flag == 0);
-		CCW_flag = 0;
-	}
+	MOTOR_init (dir);
+	while (CW_flag == 0);
+}
+
+
+void MOTOR_close (uint8 dir)
+{
+	MOTOR_init (dir);
+	while (CCW_flag == 0);
+}
+
+
+void MOTOR_stop (void)
+{
+	MOTOR_deinit ();
 }
 
 uint8 get_state (void)

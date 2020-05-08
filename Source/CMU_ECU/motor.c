@@ -37,3 +37,10 @@ void MOTOR_init (uint8 direction)
 		CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_B);
 	}
 }
+
+
+void MOTOR_deinit (void)
+{
+	CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_A);
+	CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_B);
+}

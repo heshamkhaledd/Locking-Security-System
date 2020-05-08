@@ -32,6 +32,6 @@
  *                      Functions Prototypes                                   *
  *******************************************************************************/
 void MOTOR_init (uint8);
-void MOTOR_run (void);
+void MOTOR_deinit (void);
 
 #endif /* MOTOR_H_ */
