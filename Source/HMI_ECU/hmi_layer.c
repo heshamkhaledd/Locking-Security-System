@@ -17,14 +17,25 @@ extern Timer_Config g_s_T1_Aconfig;
 extern Timer_Config g_s_T1_Bconfig;
 
 
+/******************************************************************************
+ *
+ * Function Name: MODULES_init
+ *
+ * Description: A function that's responsible for initializing all the required
+ * Modules that are used in the Human Machine Interface ECU
+ * 
+ * Input: void
+ * Output: void
+ * 
+ *****************************************************************************/
 
 void MODULES_init (void)
 {
 	LCD_init ();
 	LCD_clearScreen ();
 	UART_init ();
-	TIMER_config ('A',25000,&g_s_T1_Aconfig);
-	TIMER_config ('B',25000,&g_s_T1_Bconfig);
+	TIMER_config ('A',65500,&g_s_T1_Aconfig);
+	TIMER_config ('B',65500,&g_s_T1_Bconfig);
 	SREG |= (1<<7);
 }
 
@@ -37,6 +48,9 @@ void MODULES_init (void)
  * that has the system two main options
  * + : For Changing the system's password
  * - : To open the door
+ * 
+ * Input: void
+ * Output: void
  *
  *****************************************************************************/
 
@@ -55,7 +69,10 @@ void SYSTEM_mainMenu (void)
  * Function Name: SYSTEM_setPassword
  *
  * Description: A function that's responsible for sending each character in the
- * password to the Control machine unit byte by byte (2nd ECU)
+ * password to the Control machine unit (2nd ECU) as a string
+ * 
+ * Input: void
+ * Output: void
  *
  *****************************************************************************/
 
@@ -79,8 +96,8 @@ void SYSTEM_setPassword (void)
 	LCD_displayString ("Enter Password:");
 	LCD_goToRowColumn (1,0);
 
-	/* Iterate 5 times to send a 5 characters password, each
-	/* character is sent with each iteration */
+	/* Iterate <password_length> times to send store the password,
+	/* in a temporary array and then send it*/
 
 	for (counter=0;counter<password_length;counter++)
 	{
@@ -91,11 +108,11 @@ void SYSTEM_setPassword (void)
 		LCD_goToRowColumn (1,counter);
 		LCD_displayCharacter ('*');
 	}
-	password_1[counter] = '#';
+	password_1[counter] = '#';				/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
 	password_1[counter] = '\0';
-	while ((UART_recieveByte ()) != READY);
-	UART_sendString (password_1); /* Sending the password's character to the 2nd ECU */
+	UART_sendByte (READY);		 			/* Sending UART ACK to the other ECU to make sure it's ready to receive */
+	UART_sendString (password_1);			/* Sending the password to the 2nd ECU */
 	LCD_clearScreen ();
 }
 
@@ -104,7 +121,10 @@ void SYSTEM_setPassword (void)
  * Function Name: SYSTEM_confirmPassword
  *
  * Description: A function that's responsible for sending a confirmation password
- * to the Control machine unit (2nd ECU) byte by byte to match it with the first.
+ * to the Control machine unit (2nd ECU) to match it with the first.
+ * 
+ * Input: void
+ * Output: void
  *
  *****************************************************************************/
 
@@ -114,8 +134,8 @@ void SYSTEM_confirmPassword (void)
 	LCD_displayString ("Confirm Password:");
 	LCD_goToRowColumn (1,0);
 
-	/* Iterate 5 times to send a 5 characters password, each
-	/* character is sent with each iteration */
+	/* Iterate <password_length> times to send store the password,
+	/* in a temporary array and then send it*/
 	uint8 counter;
 	uint8 password_2[password_length+2];
 
@@ -128,11 +148,11 @@ void SYSTEM_confirmPassword (void)
 		LCD_goToRowColumn (1,counter);
 		LCD_displayCharacter ('*');
 	}
-	password_2[counter] = '#';
+	password_2[counter] = '#';			/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
 	password_2[counter] = '\0';
-	/*while ((UART_recieveByte()) != READY);*/
-	UART_sendString (password_2); /* Sending the password's character to the 2nd ECU */
+	UART_sendByte (READY);				/* Sending UART ACK to the other ECU to make sure it's ready to receive */
+	UART_sendString (password_2);		/* Sending the password's character to the 2nd ECU */
 	LCD_clearScreen ();
 }
 
@@ -140,19 +160,23 @@ void SYSTEM_confirmPassword (void)
  *
  * Function Name: SYSTEM_checkMatching
  *
- * Description: A function that's responsible for checking if the first password
- * Entry matches the second entry (for confirmation)
- *
+ * Description: Function responsible for waiting the 2nd ECU to give it the ACK
+ * If the two passwords are identical or not. If yes proceed to the rest of the
+ * Routine, if not, return WRONG and keep looping until there's a match.
+ * 
+ * Input:void
+ * Output: uint8
+ * 
  *
  *****************************************************************************/
 
 uint8 SYSTEM_checkMatching (void)
 {
-	if (UART_recieveByte == 0)
+	UART_sendByte (READY);
+	if (((UART_recieveByte ()) != Idle))
 	{
 		SYSTEM_errorMessage ();
-		_delay_ms (50);
-		return initial;
+		return WRONG;
 	}
 	else
 		return Idle;
@@ -162,44 +186,50 @@ uint8 SYSTEM_checkMatching (void)
  *
  * Function Name: SYSTEM_enterPassword
  *
- * Description: A function that's responsible for entering the user's pre-setted
- * password to make a specific order
+ * Description: A function that's responsible for taking the user's password
+ * storing it, and sending it to the 2nd ECU to check if there's a match or not.
  *
+ * Input: void
+ * Output: uint8
  *
  *****************************************************************************/
 
-void SYSTEM_enterPassword (void)
+uint8 SYSTEM_enterPassword (void)
 {
 	LCD_clearScreen ();
 	LCD_goToRowColumn (0,0);
 	LCD_displayString ("Enter Password:");
 	LCD_goToRowColumn (1,0);
 
-	/* Iterate 5 times to send a 5 characters password, each
-	/* character is sent with each iteration */
+	/* Iterate <password_length> times to send store the password,
+	/* in a temporary array and then send it*/
 	uint8 counter;
 	uint8 password[password_length+2];
 	for (counter=0;counter<password_length;counter++)
 	{
 		password[counter] = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (250); /* To prevent pressing overlap */
+		_delay_ms (250);							 /* To prevent switches debouncing */
 		LCD_displayCharacter ('*');
 	}
-	password[counter] = '#';
+	password[counter] = '#';			/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
 	password[counter] = '\0';
-	/*while ((UART_recieveByte ()) != READY);*/
-	UART_sendString (password); /* Sending the password's character to the 2nd ECU */
 	LCD_clearScreen ();
+	UART_sendByte (READY);				/* Sending UART ACK to the other ECU to make sure it's ready to receive */
+	UART_sendString (password); 		/* Sending the password's character to the 2nd ECU */
+	UART_sendByte (READY);
+	return ((UART_recieveByte ()));
 }
 
 /******************************************************************************
  *
- * Function Name: SYSTEM_confirmMessage
+ * Function Name: SYSTEM_confirm_<DoorState>Message
  *
  * Description: A function that's responsible for displaying the door state on
  * the LCD, either it's opening or closing
- *
+ * 
+ * Input: void
+ * Output: void
  *
  *****************************************************************************/
 
@@ -209,8 +239,7 @@ void SYSTEM_confirm_Open_Message (void)
 		LCD_displayString ("Door is now");
 		LCD_goToRowColumn (1,0);
 		LCD_displayString ("Opening...");
-		while (open_flag == 0); /* Polling for 8 seconds until the door is opened */
-		open_flag = 0;
+		while (open_flag == 0);			/* Polling for 8 seconds until the door is opened */
 }
 
 void SYSTEM_confirm_Close_Message (void)
@@ -219,8 +248,7 @@ void SYSTEM_confirm_Close_Message (void)
 	LCD_displayString ("Door is now");
 	LCD_goToRowColumn (1,0);
 	LCD_displayString ("Closing...");
-	while (close_flag == 0); /* Polling for 8 seconds until the door is closed */
-	close_flag = 0;
+	while (close_flag == 0);			/* Polling for 8 seconds until the door is closed */
 }
 
 
@@ -230,8 +258,11 @@ void SYSTEM_confirm_Close_Message (void)
  * Function Name: SYSTEM_errorMessage
  *
  * Description: A function that's responsible for displaying an error message
- * to the user if he pressed a wrong key on the main menu
- *
+ * to the user if he pressed a wrong key on the main menu or entered a wrong
+ * Password.
+ * 
+ * Input: void
+ * Output: void
  *
  *****************************************************************************/
 
@@ -259,6 +290,9 @@ void SYSTEM_errorMessage (void)
  * Either,
  * '+' : Change Password
  * '-' : Open Door
+ * 
+ * Input: void
+ * Output: uint8
  *
  *****************************************************************************/
 

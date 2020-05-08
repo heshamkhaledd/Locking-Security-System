@@ -20,9 +20,9 @@ void TWI_init(void)
 	
     /* Two Wire Bus address my address if any master device want to call me: 0x1 (used in case this MC is a slave device)
        General Call Recognition: Off */
-    TWAR = 0b00000010; // my address = 0x01 :) 
+    TWAR = 0b00000010; /* My Address if someone wanted to use my controller as slave = 0x01 */
 	
-    TWCR = (1<<TWEN); /* enable TWI */
+    TWCR = (1<<TWEN); /* Enable TWI */
 }
 
 void TWI_start(void)

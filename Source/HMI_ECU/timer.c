@@ -74,6 +74,8 @@ static volatile void (*g_Timer1_Call_Back_Ptr) (void) = (void *) 0;
 
 void TIMER1_deinit (void)
 {
+	open_flag = 0;
+	close_flag = 0;
 	TCCR1A = 0;
 	TCCR1B = 0;
 	OCR1A = 0;

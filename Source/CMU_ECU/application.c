@@ -37,6 +37,7 @@ int main ()
 	while (1)
 	{
 		
+		check = WRONG;
 		/***********************************************************************
 		 * If this is the system first launching, keep the ECU in the initial
 		 * Condition. Waitinf for the user to enter and confirm his new
@@ -52,7 +53,7 @@ int main ()
 		 * The default state of the system is to be in the Idle state,
 		 * waiting for the user to choose one of the options available for him
 		 ***************************************************************************/
-		state = get_state ();
+		state = CONTROL_getState ();
 
 		if (state == CHG_PW)
 		{
@@ -76,7 +77,7 @@ int main ()
 
 			else if (ERROR_entry == MAX_TRY)
 			{
-				while (1);  /* MAKE IT A BUZZER */
+				CONTROL_alert ();  /* MAKE IT A BUZZER */
 			}
 			
 		}
@@ -98,14 +99,21 @@ int main ()
 				TIMER1_setCallBack (MOTOR_close);
 				TIMER1_init (&g_s_T1_Aconfig);
 				TIMER1_init (&g_s_T1_Bconfig);
-				MOTOR_open (CLOCKWISE);
+				MOTOR_open ();
 				TIMER1_deinit ();
 				MOTOR_stop ();
+			}
+
+			else if (ERROR_entry == MAX_TRY)
+			{
+				CONTROL_alert ();
 			}
 		}
 		else
 		{
 			/* DO NOTHING AND RETURN TO IDEL STATE */
+			state = Idle;
+			check = WRONG;
 		}
 		
 	}

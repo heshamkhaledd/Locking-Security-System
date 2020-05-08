@@ -20,11 +20,6 @@
 
 void MOTOR_init (uint8 direction)
 {
-	/* Motor control pins are set to output */
-
-	SET_BIT (MOTOR_DIR,MOTOR_PIN_A);
-	SET_BIT (MOTOR_DIR,MOTOR_PIN_A);
-
 	/* Configure Motor to rotate in the required direction */
 	if (direction == CLOCKWISE)
 	{
@@ -37,7 +32,6 @@ void MOTOR_init (uint8 direction)
 		CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_B);
 	}
 }
-
 
 void MOTOR_deinit (void)
 {

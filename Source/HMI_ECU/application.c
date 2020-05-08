@@ -29,71 +29,98 @@ void TIMER_config (uint8 channel,uint16 comp_var,Timer_Config *Member_Ptr)
 
 int main ()
 {
-	uint8 SYSTEM_launchTimes = 0;
-	uint8 state = initial;
-	uint8 ERROR = 0;
 	MODULES_init ();
+	uint8 state = initial;
+	uint8 check= WRONG;
+	uint8 ERROR_entry = 0;
+
+
 	while (1)
 	{
+		
+		check = WRONG; /* Initial state for entered password as wrong */
+						/* Until proven the opposite */
+
+
 		/***********************************************************************
 		 * If this is the system first launching, Display a Welcome message.
-		 *  It's required from the user To Configure his security password for
+		 * It's required from the user To Configure his security password for
 		 * the first time, in order to Use it later
 		 ***********************************************************************/
-
-		while ((SYSTEM_launchTimes == 0) && state != Idle)
+		while (state == initial && check == WRONG)
 		{
 			SYSTEM_setPassword ();
 			SYSTEM_confirmPassword ();
-			SYSTEM_checkMatching ();
-			SYSTEM_launchTimes++; /* To Never get back in this block if the initial settings are made */
+			check = SYSTEM_checkMatching ();
 		}
 
 		/**************************************************************************
-		 * The default state of the system is to be at the main menu screen layout
+		 * The Idle state of the system is to be at the main menu screen layout
 		 * waiting for the user to choose one of the options available for him
 		 ***************************************************************************/
-
 		SYSTEM_mainMenu ();
 		state = SYSTEM_userChooseOption ();
 
 		if (state == CHG_PW)
 		{
-			SYSTEM_enterPassword ();
-			while ((UART_recieveByte == 0) && ERROR != MAX_TRY )
-				ERROR++;
-
-			if (ERROR != MAX_TRY)
+			check= WRONG;
+			while (check == WRONG && ERROR_entry != MAX_TRY)
 			{
-				ERROR = 0;
-				SYSTEM_setPassword ();
-				SYSTEM_confirmPassword ();
-				SYSTEM_checkMatching ();
+				check = SYSTEM_enterPassword ();
+				if (check == WRONG)
+				{
+					ERROR_entry++;
+				}
 			}
-			else
+
+			if (ERROR_entry != MAX_TRY)
 			{
-				SYSTEM_errorMessage ();
+				ERROR_entry = 0;
+				check = WRONG;
+				while (check == WRONG)
+				{
+					SYSTEM_setPassword ();
+					SYSTEM_confirmPassword ();
+					check = SYSTEM_checkMatching ();
+				}
+			}
+
+			else if (ERROR_entry == MAX_TRY)
+			{
+				while (1)
+				{
+					SYSTEM_errorMessage ();
+				}
 			}
 			
 		}
 		else if (state == O_DOOR)
 		{
-			SYSTEM_enterPassword ();
-			while ((UART_recieveByte == 0) && ERROR != MAX_TRY );
-				ERROR++;
-
-			if (ERROR != MAX_TRY)
+			check = WRONG;
+			while (check == WRONG && ERROR_entry != MAX_TRY)
 			{
-				ERROR = 0;
+				check = SYSTEM_enterPassword ();
+				if (check == WRONG)
+				{
+					ERROR_entry++;
+				}
+			}
+
+			if (ERROR_entry != MAX_TRY)
+			{
+				ERROR_entry = 0;
 				TIMER1_setCallBack (SYSTEM_confirm_Close_Message);
 				TIMER1_init (&g_s_T1_Aconfig);
 				TIMER1_init (&g_s_T1_Bconfig);
 				SYSTEM_confirm_Open_Message ();
 				TIMER1_deinit ();
 			}
-			else
+			else if (ERROR_entry == MAX_TRY)
 			{
-				SYSTEM_errorMessage ();
+				while (1)
+				{
+					SYSTEM_errorMessage ();
+				}
 			}
 		}
 		else
