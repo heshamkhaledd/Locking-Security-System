@@ -8,7 +8,7 @@
 
 ##### Each ECU is constructed with 3 software layers for optimization and portability purposes
 1. Application layer, where it just handles the ECU routine.
-2. Interfacing layer, where it communicate with external peripherals
+2. Interfacing layer, where it communicates with external peripherals.
 3. MCAL layer, the closest layer to the metal where all the controller's hardware registers are in.
 
 ## Routine

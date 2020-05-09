@@ -102,7 +102,7 @@ void SYSTEM_setPassword (void)
 	for (counter=0;counter<password_length;counter++)
 	{
 		password_1[counter]= KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (250);
+		_delay_ms (500);							  /*delay for switch debouncing */
 		LCD_integerToString (password_1[counter]);
 		_delay_ms (150);
 		LCD_goToRowColumn (1,counter);
@@ -142,7 +142,7 @@ void SYSTEM_confirmPassword (void)
 	for (counter=0;counter<password_length;counter++)
 	{
 		password_2[counter]= KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (250);
+		_delay_ms (500);							  /*delay for switch debouncing */
 		LCD_integerToString (password_2[counter]);
 		_delay_ms (150);
 		LCD_goToRowColumn (1,counter);
@@ -208,7 +208,7 @@ uint8 SYSTEM_enterPassword (void)
 	for (counter=0;counter<password_length;counter++)
 	{
 		password[counter] = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
-		_delay_ms (250);							 /* To prevent switches debouncing */
+		_delay_ms (500);							 /* To prevent switch debouncing */
 		LCD_displayCharacter ('*');
 	}
 	password[counter] = '#';			/*A conventional NULL Terminator for the UART_sendString */
