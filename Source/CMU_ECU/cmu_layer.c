@@ -158,8 +158,8 @@ uint8 CONTROL_checkMatch (void)
  *
  * Function Name: CONTROL_alert
  *
- * Description: Function responsible for checking matches with any entered password
- * And the stored password in the EEPROM.
+ * Description: Function responsible for toggling the buzzer in the case 
+ * of a theft or breaking.
  * 
  * Input: void
  * Output: void
@@ -171,7 +171,7 @@ void CONTROL_alert (void)
 {
 	while (1)
 	{
-		TOGGLE_BIT (PORTD,PD7);
+		Toggle_buzzer ();
 		_delay_ms (500);
 	}
 }

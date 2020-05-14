@@ -56,5 +56,6 @@ void SYSTEM_confirmPassword (void);
 void SYSTEM_confirm_Open_Message (void);
 void SYSTEM_confirm_Close_Message (void);
 void SYSTEM_errorMessage (void);
+void SYSTEM_confirmSave (void);
 
 #endif /* HMI_LAYER_H_ */

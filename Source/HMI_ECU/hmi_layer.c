@@ -88,7 +88,7 @@ void SYSTEM_setPassword (void)
 		LCD_clearScreen ();
 		LCD_goToRowColumn (0,0);
 		LCD_displayString ("  **WELCOME**");
-		_delay_ms (500);
+		_delay_ms (1000);
 	}
 
 	LCD_clearScreen ();
@@ -103,10 +103,22 @@ void SYSTEM_setPassword (void)
 	{
 		password_1[counter]= KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
 		_delay_ms (500);							  /*delay for switch debouncing */
-		LCD_integerToString (password_1[counter]);
-		_delay_ms (150);
-		LCD_goToRowColumn (1,counter);
-		LCD_displayCharacter ('*');
+		if (password_1[counter] == 0)			   	 /* Redefining the zero with -1 to prevent confusion of null terminator '\0' */
+		{
+			password_1[counter] = -1;
+			LCD_displayCharacter ('0');
+			_delay_ms (150);
+			LCD_goToRowColumn (1,counter);
+			LCD_displayCharacter ('*');
+		}
+		else
+		{
+			LCD_integerToString (password_1[counter]);
+			_delay_ms (150);
+			LCD_goToRowColumn (1,counter);
+			LCD_displayCharacter ('*');
+		}
+		
 	}
 	password_1[counter] = '#';				/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
@@ -143,10 +155,21 @@ void SYSTEM_confirmPassword (void)
 	{
 		password_2[counter]= KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
 		_delay_ms (500);							  /*delay for switch debouncing */
-		LCD_integerToString (password_2[counter]);
-		_delay_ms (150);
-		LCD_goToRowColumn (1,counter);
-		LCD_displayCharacter ('*');
+		if (password_2[counter] == 0)				 /* Redefining the zero with -1 to prevent confusion of null terminator '\0' */
+		{
+			password_2[counter] = -1;
+			LCD_displayCharacter ('0');
+			_delay_ms (150);
+			LCD_goToRowColumn (1,counter);
+			LCD_displayCharacter ('*');
+		}
+		else
+		{
+			LCD_integerToString (password_2[counter]);
+			_delay_ms (150);
+			LCD_goToRowColumn (1,counter);
+			LCD_displayCharacter ('*');
+		}
 	}
 	password_2[counter] = '#';			/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
@@ -209,7 +232,13 @@ uint8 SYSTEM_enterPassword (void)
 	{
 		password[counter] = KeyPad_getPressedKey (); /*Get and record the pressed key on the KeyPad */
 		_delay_ms (500);							 /* To prevent switch debouncing */
-		LCD_displayCharacter ('*');
+		if (password[counter] == 0)					/* Redefining the zero with -1 to prevent confusion of null terminator '\0' */
+		{
+			password[counter] = -1;
+			LCD_displayCharacter ('*');
+		}
+		else
+			LCD_displayCharacter ('*');
 	}
 	password[counter] = '#';			/*A conventional NULL Terminator for the UART_sendString */
 	counter++;
@@ -251,7 +280,28 @@ void SYSTEM_confirm_Close_Message (void)
 	while (close_flag == 0);			/* Polling for 8 seconds until the door is closed */
 }
 
+/******************************************************************************
+ *
+ * Function Name: SYSTEM_confirmSave
+ *
+ * Description: A function that's responsible for displaying an confirm message
+ * to the user that his new password is saved successfully.
+ * 
+ * Input: void
+ * Output: void
+ *
+ *****************************************************************************/
 
+
+void SYSTEM_confirmSave (void)
+{
+	LCD_clearScreen ();
+	LCD_displayString ("Password");
+	LCD_goToRowColumn (1,0);
+	LCD_displayString ("Saved.");
+	_delay_ms (1000);
+	LCD_clearScreen ();
+}
 
 /******************************************************************************
  *
@@ -300,7 +350,7 @@ uint8 SYSTEM_userChooseOption (void)
 {
 	uint8 pressed_key;
 	pressed_key = KeyPad_getPressedKey ();
-	_delay_ms (250);
+	_delay_ms (500);
 	if ((pressed_key == '+') || (pressed_key == '-'))
 	{
 		if (pressed_key == '+')

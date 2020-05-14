@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "uart.h"
 #include "motor.h"
+#include "buzzer.h"
 
 
 #ifndef HMI_LAYER_H_

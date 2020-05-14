@@ -52,6 +52,8 @@ int main ()
 			SYSTEM_setPassword ();
 			SYSTEM_confirmPassword ();
 			check = SYSTEM_checkMatching ();
+			if (check != WRONG)
+				SYSTEM_confirmSave ();
 		}
 
 		/**************************************************************************
@@ -82,6 +84,8 @@ int main ()
 					SYSTEM_setPassword ();
 					SYSTEM_confirmPassword ();
 					check = SYSTEM_checkMatching ();
+					if (check != WRONG)
+						SYSTEM_confirmSave ();
 				}
 			}
 
